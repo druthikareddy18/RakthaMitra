@@ -1,0 +1,9 @@
+RAKTHAMITRA TITLE PAGE UPGRADE
+
+1. Back up your existing index.html.
+2. Copy this index.html into C:\xampp\htdocs\RakthaMitra_Profile\
+3. Replace the old index.html.
+4. Keep all existing PHP files and database unchanged.
+5. Open http://localhost/RakthaMitra_Profile/ and press Ctrl+F5.
+
+No database changes are required. This update changes the visual branding and home hero only.

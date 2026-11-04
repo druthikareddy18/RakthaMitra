@@ -1,0 +1,23 @@
+RAKTHAMITRA UPGRADE NOTES
+
+Included in this package
+- Donor response board: signed-in donors with an Available profile see same-city, exact-blood-group requests.
+- Donor response endpoint uses prepared SQL statements, session authentication, request ownership checks and duplicate-response protection.
+- Dashboard counts from MySQL.
+- Responsive navigation and cards inherit the existing mobile CSS.
+- Email notification hook is provided but DISABLED by default.
+
+IMPORTANT EMAIL LIMITATION
+XAMPP does not send email out of the box. To enable real email, configure SMTP using a maintained mail library such as PHPMailer and credentials from your email provider. Do not put your normal email password in website code. The included email_config.php deliberately leaves email disabled; no email will be sent until SMTP is properly configured.
+
+SECURITY CHECKLIST
+- Keep password_hash() and password_verify(); never store plain-text passwords.
+- Keep prepared statements for all SQL that includes user input.
+- Keep all user-specific read/update endpoints checking $_SESSION['user_id'].
+- Use HTTPS when hosted publicly; localhost HTTP is only for development.
+- Use a strong, unique database password before deployment; do not deploy with the XAMPP root account without a password.
+- Add CSRF tokens and rate limiting before public deployment. This student-project package adds session/ownership checks to the new endpoints, but is not a complete production security audit.
+- Never publish donor phone numbers without consent. The response board does not expose phone numbers.
+
+MEDICAL SAFETY
+A donor response only means willingness to be contacted. It does not establish eligibility, compatibility, blood availability, or actual donation. Hospitals/authorized blood banks must confirm these.

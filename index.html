@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RakthaMitra | Blood Donor Coordination</title>
+<style>
+:root{--red:#c62838;--ink:#192333;--muted:#687487;--line:#e5e9f0;--bg:#f7f8fb;--green:#16845b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Segoe UI,Arial,sans-serif}
+header{position:sticky;top:0;background:white;border-bottom:1px solid var(--line);z-index:2}.nav{max-width:1100px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{font-size:21px;font-weight:800;color:var(--red)}nav{display:flex;gap:5px;flex-wrap:wrap}nav button{border:0;background:transparent;padding:10px 12px;border-radius:9px;color:#596477;font-weight:700;cursor:pointer}nav button.active,nav button:hover{background:#fff0f1;color:var(--red)}
+main{max-width:1100px;margin:27px auto;padding:0 20px 45px}.page{display:none}.page.active{display:block}
+.hero{border-radius:23px;background:linear-gradient(120deg,#98182b,#d53b4d);color:white;padding:35px;display:grid;grid-template-columns:1.5fr .5fr;gap:20px;align-items:center}
+.hero h1{font-size:clamp(30px,4vw,44px);line-height:1.1;margin:12px 0}.hero p{color:#ffe7e9;line-height:1.6;max-width:630px}.heart{font-size:90px;text-align:center}.btn{border:0;border-radius:10px;background:var(--red);color:white;padding:11px 16px;font-weight:750;cursor:pointer}.btn.white{background:white;color:var(--red)}.btn.outline{background:white;color:var(--ink);border:1px solid var(--line)}.btn.small{padding:8px 11px;font-size:12px}.btn:disabled{opacity:.55;cursor:not-allowed}button:focus-visible,a:focus-visible{outline:3px solid #f7a6af;outline-offset:2px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.heading{margin:27px 0 15px}.heading h2{margin:0;font-size:25px}.heading p{margin:6px 0;color:var(--muted)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.card,.panel,.donor{background:white;border:1px solid var(--line);border-radius:16px;padding:19px}.metric{font-size:27px;font-weight:800;margin:8px 0}.muted{font-size:13px;color:var(--muted)}.tag{display:inline-block;background:#fff0f1;color:var(--red);padding:5px 9px;border-radius:30px;font-size:12px;font-weight:750}.tag.green{background:#e7f7ef;color:var(--green)}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.field{display:flex;flex-direction:column;gap:7px}.full{grid-column:1/-1}label{font-size:13px;font-weight:700;color:#4d596a}input,select,textarea{font:inherit;padding:11px 12px;border:1px solid #dce1e8;border-radius:10px;width:100%;background:white}textarea{min-height:80px}input:focus,select:focus,textarea:focus{outline:2px solid #f7c2c8;border-color:var(--red)}
+.donors{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-top:17px}.donor-top{display:flex;justify-content:space-between;align-items:center}.blood{width:42px;height:42px;border-radius:13px;background:#fff0f1;color:var(--red);display:grid;place-items:center;font-weight:800}.donor h3{margin:12px 0 5px}.donor p{font-size:13px;color:var(--muted);margin:6px 0}.donor button{width:100%;margin-top:10px}
+.notice{margin-top:15px;background:#fff8e8;color:#805b12;border-radius:11px;padding:12px 14px;font-size:12px;line-height:1.55}
+table{border-collapse:collapse;width:100%;min-width:650px}th,td{padding:12px 10px;text-align:left;border-bottom:1px solid var(--line);font-size:13px}th{font-size:11px;color:var(--muted);text-transform:uppercase}.tablewrap{overflow:auto}.empty{text-align:center;padding:25px;color:var(--muted)}.journey{display:flex;flex-wrap:wrap;gap:8px}.step{padding:8px 10px;background:#f0f2f6;border-radius:8px;font-size:12px;color:#7a8391;font-weight:700}.step.done{background:#e7f7ef;color:var(--green)}
+.toast{display:none;position:fixed;right:20px;bottom:20px;background:#17212e;color:white;padding:13px 17px;border-radius:11px;z-index:5}
+footer{text-align:center;color:#8a93a0;font-size:12px;padding:24px}
+
+.site-footer{background:#171f2d;color:#e9edf3;margin-top:28px;padding:30px 20px 18px}
+.footer-inner{max-width:1100px;margin:auto;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:28px}
+.footer-brand{font-size:20px;font-weight:850;color:#fff;margin-bottom:9px}.site-footer p{font-size:13px;line-height:1.65;color:#c2cad5;margin:7px 0}.footer-heading{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#ffb7c0;font-weight:800;margin:3px 0 12px}.footer-links{display:grid;gap:9px}.footer-links a{color:#e9edf3;text-decoration:none;font-size:13px;cursor:pointer}.footer-links a:hover{color:#ffb7c0;text-decoration:underline}.footer-bottom{max-width:1100px;margin:22px auto 0;padding-top:15px;border-top:1px solid #ffffff24;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:#aeb8c5;font-size:11px}
+.support-panel{margin-top:18px;background:linear-gradient(135deg,#fff,#fff5f6);border:1px solid #f1d9de;border-radius:17px;padding:20px;display:grid;grid-template-columns:1.2fr .8fr;gap:18px;align-items:center}.support-panel h3{margin:4px 0 7px}.support-panel p{color:var(--muted);font-size:13px;line-height:1.6;margin:0}.support-actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:650px){.footer-inner{grid-template-columns:1fr 1fr}.footer-inner>div:first-child{grid-column:1/-1}.support-panel{grid-template-columns:1fr}.support-actions{justify-content:flex-start}}
+@media(max-width:420px){.footer-inner{grid-template-columns:1fr}.footer-inner>div:first-child{grid-column:auto}}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.heart{display:none}.cards,.donors{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){main{padding:0 13px 30px}.hero{padding:24px}.cards,.donors,.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.nav{padding:12px}.brand{width:100%}}
+
+.login-wrap{max-width:520px;margin:28px auto}.login-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:0 12px 35px #1923330b}.login-mark{width:58px;height:58px;border-radius:17px;background:#fff0f1;color:var(--red);display:grid;place-items:center;font-size:28px;margin-bottom:18px}.login-card h2{margin:0 0 8px}.login-card .sub{color:var(--muted);margin:0 0 22px}.login-card .field{margin-bottom:16px}.login-card .btn{width:100%;justify-content:center}.role-pick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}.role-option{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff;cursor:pointer;text-align:left;font-weight:700;color:var(--ink)}.role-option.selected{border-color:var(--red);background:#fff4f5;color:var(--red)}.role-option span{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:4px}.login-foot{font-size:12px;color:var(--muted);text-align:center;margin-top:16px}
+[hidden]{display:none!important} nav button#logoutButton{color:var(--red)}
+
+/* Home + dashboard visual refresh */
+:root{--deep:#741326;--rose:#fff0f2;--gold:#ffd9a0}
+.hero{position:relative;overflow:hidden;min-height:285px;background:radial-gradient(circle at 85% 15%,#f36b79 0,transparent 28%),linear-gradient(125deg,#721326 0%,#a91f36 48%,#dc4557 100%);box-shadow:0 18px 45px #9d1b3026}
+.hero:after{content:"";position:absolute;width:270px;height:270px;border:1px solid #ffffff25;border-radius:50%;right:7%;top:-105px;box-shadow:0 0 0 28px #ffffff0b,0 0 0 58px #ffffff08;pointer-events:none}
+.hero h1{letter-spacing:-1.2px}.hero-kicker{display:inline-flex;align-items:center;gap:8px;background:#ffffff20;border:1px solid #ffffff35;border-radius:30px;padding:7px 12px;font-size:12px;font-weight:800;letter-spacing:.5px}.pulse-dot{width:8px;height:8px;background:#a8f0c8;border-radius:50%;box-shadow:0 0 0 5px #a8f0c825;animation:pulse 1.8s infinite}@keyframes pulse{50%{box-shadow:0 0 0 9px #a8f0c800}}
+.hero-art{position:relative;z-index:1;display:grid;place-items:center;min-height:190px}.drop-orb{width:158px;height:158px;border-radius:48% 52% 55% 45%;background:linear-gradient(145deg,#ffffff35,#ffffff0c);border:1px solid #ffffff55;display:grid;place-items:center;font-size:76px;box-shadow:0 18px 45px #4b091b55;transform:rotate(-8deg);animation:float 4s ease-in-out infinite}.float-chip{position:absolute;background:#fff;color:#842039;padding:9px 13px;border-radius:12px;font-size:12px;font-weight:800;box-shadow:0 8px 25px #4b091b30}.chip-one{top:12px;right:0}.chip-two{bottom:15px;left:0}@keyframes float{50%{transform:translateY(-9px) rotate(-4deg)}}
+.home-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}.action-tile{background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px;text-align:left;cursor:pointer;transition:.2s;min-height:130px}.action-tile:hover{transform:translateY(-4px);border-color:#efabb4;box-shadow:0 12px 25px #a51d3012}.action-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:13px;background:var(--rose);font-size:21px;margin-bottom:12px}.action-tile strong{display:block;margin-bottom:5px}.action-tile span{font-size:12px;color:var(--muted);line-height:1.5}
+.home-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.home-stat{background:linear-gradient(145deg,#fff,#fff8f8);border:1px solid #f3dfe2;border-radius:14px;padding:15px}.home-stat .metric{color:var(--red);font-size:28px}.section-eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--red);font-weight:850}.dashboard-hero{background:linear-gradient(115deg,#fff,#fff1f3);border:1px solid #f2d9de;border-radius:20px;padding:22px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:17px}.dashboard-hero h2{margin:6px 0;font-size:25px}.dashboard-hero p{margin:0;color:var(--muted);font-size:13px}.dash-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}.dash-card{position:relative;overflow:hidden;transition:.2s}.dash-card:hover{transform:translateY(-3px);box-shadow:0 12px 25px #19233310}.dash-card:after{content:"";position:absolute;width:75px;height:75px;border-radius:50%;right:-24px;top:-25px;background:#fff0f2}.dash-card .metric{font-size:31px;position:relative;z-index:1}.metric-icon{font-size:20px;margin-bottom:10px}.dash-bottom{display:grid;grid-template-columns:1.2fr .8fr;gap:15px;margin-top:16px}.progress-line{height:10px;border-radius:20px;background:#f0f1f5;overflow:hidden;margin:9px 0 14px}.progress-fill{height:100%;width:0;background:linear-gradient(90deg,#bd263e,#ef7885);border-radius:20px;transition:width .8s ease}.dash-shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.dash-shortcuts .btn{width:100%}.dashboard-footnote{font-size:12px;color:var(--muted);line-height:1.55;margin-top:12px}
+@media(max-width:760px){.dash-metrics{grid-template-columns:repeat(2,1fr)}.dash-bottom{grid-template-columns:1fr}.hero-art{min-height:145px}.drop-orb{width:125px;height:125px;font-size:58px}}
+@media(max-width:520px){.home-actions,.home-stats{grid-template-columns:1fr}.dashboard-hero{align-items:flex-start;flex-direction:column}.dash-metrics{grid-template-columns:1fr 1fr}.dash-card{padding:14px}.dash-card .metric{font-size:25px}}
+
+
+/* Expanded home-page experience */
+.home-intro{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:26px 0 14px}.home-intro h2{margin:5px 0;font-size:27px;letter-spacing:-.5px}.home-intro p{margin:5px 0;color:var(--muted)}
+.quick-search{background:linear-gradient(135deg,#fff 0%,#fff4f5 100%);border:1px solid #f0d7dc;border-radius:20px;padding:20px;display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;box-shadow:0 10px 28px #9d1b300b}.quick-search .field{min-width:0}.quick-search .btn{min-height:43px;white-space:nowrap}
+.home-actions .action-tile{position:relative;overflow:hidden}.home-actions .action-tile:after{content:'↗';position:absolute;right:16px;top:16px;color:#d77b87;font-size:18px;font-weight:800}
+.value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.value-card{background:white;border:1px solid var(--line);border-radius:17px;padding:19px;transition:.2s}.value-card:hover{transform:translateY(-3px);box-shadow:0 12px 25px #1923330c}.value-icon{width:45px;height:45px;border-radius:14px;background:#fff0f2;display:grid;place-items:center;font-size:22px;margin-bottom:12px}.value-card h3{margin:0 0 7px;font-size:16px}.value-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+.steps-track{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.journey-card{background:white;border:1px solid var(--line);border-radius:15px;padding:16px;position:relative}.journey-no{width:30px;height:30px;border-radius:50%;background:#fff0f2;color:var(--red);display:grid;place-items:center;font-weight:850;margin-bottom:12px}.journey-card h3{font-size:14px;margin:0 0 6px}.journey-card p{font-size:12px;line-height:1.55;color:var(--muted);margin:0}
+.home-banner{margin-top:18px;border-radius:20px;padding:23px;background:linear-gradient(115deg,#202b3b,#35465b);color:white;display:flex;align-items:center;justify-content:space-between;gap:18px}.home-banner h3{margin:0 0 7px;font-size:20px}.home-banner p{margin:0;color:#d8e0ea;font-size:13px;line-height:1.6;max-width:650px}.home-banner .btn{background:white;color:#9f2034;white-space:nowrap}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.faq-grid details{background:white;border:1px solid var(--line);border-radius:13px;padding:14px 16px}.faq-grid summary{font-weight:750;font-size:13px;cursor:pointer}.faq-grid details p{color:var(--muted);font-size:12px;line-height:1.6;margin:10px 0 0}
+.home-stat{transition:transform .2s}.home-stat:hover{transform:translateY(-3px)}
+@media(max-width:760px){.quick-search{grid-template-columns:1fr 1fr}.quick-search .btn{grid-column:1/-1}.steps-track{grid-template-columns:repeat(2,1fr)}.home-banner{align-items:flex-start;flex-direction:column}.value-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.home-intro{align-items:flex-start;flex-direction:column}.quick-search,.value-grid,.steps-track,.faq-grid{grid-template-columns:1fr}.home-banner{padding:19px}}
+
+
+/* Premium RakthaMitra title / opening hero */
+.brand{display:flex;align-items:center;gap:10px;color:#8f1d32;letter-spacing:-.5px}.brand-mark{width:39px;height:39px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,#e94d63,#a71e39);color:#fff;font-size:20px;box-shadow:0 6px 15px #b5274028}.brand-name{display:flex;flex-direction:column;font-size:20px;line-height:1;font-weight:900}.brand-name span{color:#d4475c}.brand-name small{font-size:8px;letter-spacing:1.35px;color:#8992a0;margin-top:5px;font-weight:800}
+.hero-premium{min-height:405px;padding:48px 48px 52px;grid-template-columns:1.25fr .75fr;position:relative;isolation:isolate;background:radial-gradient(ellipse at 80% 12%,#f77b8b65 0,transparent 34%),radial-gradient(ellipse at 15% 100%,#5b1026 0,transparent 42%),linear-gradient(120deg,#651326 0%,#941d35 48%,#c9344d 100%);box-shadow:0 22px 55px #79182a30}
+.hero-premium:before{content:"";position:absolute;inset:0;z-index:-1;opacity:.12;background-image:radial-gradient(#fff 1px,transparent 1px);background-size:19px 19px;mask-image:linear-gradient(90deg,black,transparent)}
+.hero-premium:after{width:420px;height:420px;right:-105px;top:-190px;border-color:#ffffff20;box-shadow:0 0 0 32px #ffffff08,0 0 0 70px #ffffff06,0 0 0 110px #ffffff04}
+.hero-copy{position:relative;z-index:2}.hero-wordmark{font-size:clamp(34px,5vw,55px);font-weight:950;letter-spacing:-2.5px;line-height:1;margin:22px 0 8px;color:#fff;text-shadow:0 4px 18px #3b071c55}.hero-wordmark span{color:#ffc1c9}.hero-wordmark b{display:inline-grid;place-items:center;vertical-align:top;margin-left:9px;width:27px;height:27px;border-radius:50%;background:#fff;color:#b32642;font-size:15px;letter-spacing:0}.hero-overline{font-size:10px;font-weight:850;letter-spacing:2.3px;color:#ffd9de}.hero-premium h1{font-size:clamp(38px,5.3vw,59px);line-height:.99;letter-spacing:-2px;margin:18px 0 13px}.hero-premium h1 em{font-style:normal;color:#ffc2ca}.hero-premium p{font-size:15px;max-width:510px;color:#ffe7eb;line-height:1.75}.hero-secondary{background:#ffffff18!important;border:1px solid #ffffff70!important;color:#fff!important}.hero-trust{display:flex;flex-wrap:wrap;gap:15px;margin-top:23px;color:#ffe0e5;font-size:11px;font-weight:700}.hero-trust span{white-space:nowrap}.hero-art-premium{min-height:245px}.premium-drop{width:190px;height:190px;border-radius:50% 50% 48% 52%;transform:rotate(-45deg);background:linear-gradient(145deg,#fff9fa,#ffcbd3 70%,#f49aa8);border:7px solid #ffffff38;box-shadow:0 22px 55px #3e071c75,inset -12px -13px 25px #d8496260;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#a51f3b;animation:float 4.5s ease-in-out infinite}.premium-drop span{font-size:68px;line-height:1;transform:rotate(45deg);text-shadow:0 5px 12px #a51f3b20}.premium-drop small{font-size:9px;line-height:1.35;text-align:center;letter-spacing:1.7px;font-weight:900;transform:rotate(45deg);margin-top:7px}.hero-ring{position:absolute;border:1px solid #ffffff38;border-radius:50%;width:250px;height:250px}.ring-a{transform:rotate(25deg) scaleX(.75)}.ring-b{transform:rotate(-35deg) scaleX(.75);width:290px;height:290px;border-style:dashed;opacity:.6}.hero-art-premium .chip-one{top:4px;right:-2px}.hero-art-premium .chip-two{bottom:5px;left:-10px}.hero-spark{position:absolute;color:#ffd6dc;font-size:25px}.spark-one{top:20px;left:22px}.spark-two{bottom:23px;right:26px}.hero-bottom-note{position:absolute;bottom:16px;left:48px;color:#ffffffa8;font-size:10px;letter-spacing:.5px}.hero-bottom-note span{color:#ffc1c9;margin-right:6px}
+@media(max-width:760px){.hero-premium{padding:30px 25px 45px;grid-template-columns:1fr;gap:5px}.hero-art-premium{min-height:205px}.premium-drop{width:145px;height:145px}.premium-drop span{font-size:52px}.hero-bottom-note{left:25px}.hero-premium h1{font-size:43px}.hero-wordmark{font-size:42px}}
+@media(max-width:520px){.hero-premium{padding:25px 20px 45px}.hero-art-premium{min-height:175px}.hero-trust{gap:8px 12px}.hero-premium p{font-size:14px}.hero-bottom-note{left:20px}.brand-name{font-size:18px}}
+
+
+/* Unified elegant interaction layer for every page */
+:root{--red:#b9233b;--ink:#202b3b;--muted:#687487;--line:#e9eaf0;--bg:#f8f8fb;--soft:#fff2f4}
+html{scroll-behavior:smooth}body{background:linear-gradient(180deg,#fff 0,#f8f8fb 360px);}
+header{box-shadow:0 5px 22px #202b3b0a;backdrop-filter:blur(14px)}
+.nav{max-width:1220px;min-height:72px}nav{gap:4px}nav button{transition:background .2s,color .2s,transform .2s;font-size:12px}nav button:hover{transform:translateY(-1px)}
+main{max-width:1220px;min-height:62vh;margin:32px auto 0}
+.page.active{animation:pageEnter .32s ease both}@keyframes pageEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.heading{padding:5px 0 3px}.heading h2{font-size:clamp(23px,3vw,30px);letter-spacing:-.7px}.heading p{line-height:1.65}
+.panel,.card,.donor,.login-card,.value-card,.journey-card,.faq-grid details{box-shadow:0 7px 24px #26334a08;transition:box-shadow .22s,border-color .22s,transform .22s}
+.panel:hover,.card:hover,.donor:hover{border-color:#efd0d6;box-shadow:0 12px 30px #26334a0d}
+.btn{border-radius:12px;padding:12px 17px;transition:transform .18s,box-shadow .18s,filter .18s;box-shadow:0 5px 12px #b9233b15}.btn:hover{transform:translateY(-2px);box-shadow:0 9px 20px #b9233b25;filter:saturate(1.08)}.btn:active{transform:translateY(0) scale(.98)}.btn.outline{box-shadow:none}.btn.outline:hover{background:#fff4f5;border-color:#e7aeb8;color:var(--red)}
+input,select,textarea{border-radius:12px;min-height:44px;transition:border-color .18s,box-shadow .18s,background .18s}input:hover,select:hover,textarea:hover{border-color:#d5a3ac}input:focus,select:focus,textarea:focus{outline:0;border-color:#c23a50;box-shadow:0 0 0 4px #c23a5018;background:#fff}
+.field label{letter-spacing:.1px}.formgrid{gap:17px}.panel{padding:22px}.donor{border-radius:18px}.blood{box-shadow:inset 0 0 0 1px #f4dce0}
+.tablewrap{border-radius:16px}table{min-width:720px}tbody tr{transition:background .15s}tbody tr:hover{background:#fff8f9}th{letter-spacing:.65px}td{line-height:1.5}
+.tag{letter-spacing:.1px}.notice{border:1px solid #f3e5c9;line-height:1.65}
+.dashboard-hero{box-shadow:0 9px 25px #9d1b3009}.dash-card{min-height:155px}.dash-card .metric{letter-spacing:-1px}.progress-line{height:12px}.dash-shortcuts .btn{min-height:46px}
+.site-footer{margin-top:55px}.footer-links a{width:max-content;max-width:100%;transition:color .18s,transform .18s}.footer-links a:hover{transform:translateX(3px)}
+.login-wrap{max-width:550px}.login-card{padding:32px}.login-card .panel{padding:0;border:0;box-shadow:none;background:transparent}
+.toast{box-shadow:0 12px 35px #10182835;max-width:min(420px,calc(100vw - 32px));line-height:1.5}
+button,a,summary{ -webkit-tap-highlight-color:transparent}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #e8a4ae;outline-offset:3px}
+@media(max-width:760px){.nav{align-items:flex-start}.nav nav{width:100%;flex-wrap:nowrap;overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}.nav nav button{white-space:nowrap;flex:0 0 auto}.panel{padding:17px}.login-card{padding:23px}main{margin-top:20px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+</style></head><body>
+<header><div class="nav"><div class="brand"><span class="brand-mark">♥</span><span class="brand-name">Raktha<span>Mitra</span><small>CARE • CONNECT • DONATE</small></span></div><nav>
+<button class="active" data-page="home">Home</button><button data-page="dashboard" id="dashboardNav" hidden>Dashboard</button><button data-page="responses" id="responsesNav" hidden>Donor Responses</button><button data-page="find">Find Donors</button><button data-page="register">Become a Donor</button><button data-page="request">Request Blood</button><button data-page="track">Request History</button><button data-page="notifications" id="notificationsNav" hidden>Notifications <span id="notificationBadge" class="tag" style="padding:2px 6px;margin-left:3px">0</span></button><button data-page="profile" id="profileNav" hidden>My Profile</button><button data-page="login" id="loginNav">Login</button>
+</nav></div></header>
+<main>
+<section class="page active" id="home">
+<div class="hero hero-premium"><div class="hero-copy"><span class="hero-kicker"><i class="pulse-dot"></i> A COMMUNITY THAT CARES</span><div class="hero-wordmark">Raktha<span>Mitra</span><b>♥</b></div><div class="hero-overline">BLOOD DONOR COORDINATION PLATFORM</div><h1>Give hope.<br><em>Share life.</em></h1><p>Every connection can make a difference. Find listed blood donors, coordinate requests, and stay informed with RakthaMitra.</p><div class="actions"><button class="btn white" onclick="go('find')">⌕ &nbsp; Find a donor</button><button class="btn hero-secondary" onclick="go('register')">♥ &nbsp; Become a donor</button></div><div class="hero-trust"><span>✦ Simple donor search</span><span>✦ Request updates</span><span>✦ Community support</span></div></div><div class="hero-art hero-art-premium"><div class="hero-ring ring-a"></div><div class="hero-ring ring-b"></div><div class="drop-orb premium-drop"><span>♥</span><small>ONE ACT<br>CAN MATTER</small></div><div class="float-chip chip-one">Every donor matters</div><div class="float-chip chip-two">Together, we care</div><div class="hero-spark spark-one">✦</div><div class="hero-spark spark-two">＋</div></div><div class="hero-bottom-note"><span>♥</span> Connecting people through kindness</div></div>
+<div class="heading"><span class="section-eyebrow">Make a difference</span><h2>How would you like to help?</h2><p>Choose a quick action to get started.</p></div>
+<div class="home-actions"><button class="action-tile" onclick="go('find')"><div class="action-icon">🔎</div><strong>Find blood donors</strong><span>Search available donor listings by blood group and city.</span></button><button class="action-tile" onclick="go('request')"><div class="action-icon">🩸</div><strong>Request blood</strong><span>Share a blood requirement with the donor community.</span></button><button class="action-tile" onclick="go('register')"><div class="action-icon">🤝</div><strong>Join as a donor</strong><span>Register your details and availability to help others.</span></button></div>
+<div class="heading"><span class="section-eyebrow">Simple and transparent</span><h2>Your request journey</h2><p>Follow each stage as your request progresses.</p></div><div class="cards"><div class="card"><span class="tag">01 · Discover</span><div class="metric">Find donors</div><div class="muted">Explore available donor listings using blood group and location filters.</div></div><div class="card"><span class="tag">02 · Connect</span><div class="metric">Receive responses</div><div class="muted">A matching donor may respond if they are willing to be contacted.</div></div><div class="card"><span class="tag green">03 · Follow</span><div class="metric">Track progress</div><div class="muted">View status updates and request history from your account.</div></div></div>
+<div class="panel" style="margin-top:17px"><div class="section-eyebrow">RakthaMitra community</div><h3 style="margin:5px 0 14px">A quick look at activity</h3><div class="home-stats"><div class="home-stat"><div class="muted">Donor listings</div><div class="metric" id="dc">0</div><span class="muted">Listed in the directory</span></div><div class="home-stat"><div class="muted">Your requests</div><div class="metric" id="rc">0</div><span class="muted">Submitted from your account</span></div><div class="home-stat"><div class="muted">Fulfilled requests</div><div class="metric" id="homeFulfilled">0</div><span class="muted">Marked fulfilled in the system</span></div></div></div>
+<div class="heading"><span class="section-eyebrow">Start with a quick search</span><h2>Looking for a particular blood group?</h2><p>Choose a group and enter a city to open the donor directory.</p></div>
+<div class="quick-search"><div class="field"><label for="homeBloodGroup">Blood group</label><select id="homeBloodGroup"><option value="">Choose blood group</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div><div class="field"><label for="homeCity">City / area</label><input id="homeCity" placeholder="Enter city or area"></div><button class="btn" type="button" onclick="homeFindDonors()">Search donors&nbsp; →</button></div>
+<div class="home-intro" id="about"><div><span class="section-eyebrow">About RakthaMitra</span><h2>Support that feels simple and clear.</h2><p>Useful tools to help people connect, communicate and follow request updates.</p></div><span class="tag green">People helping people</span></div>
+<div class="value-grid"><article class="value-card"><div class="value-icon">🔎</div><h3>Search with clarity</h3><p>Explore donor listings using blood group and city filters, with availability shown in the directory.</p></article><article class="value-card"><div class="value-icon">🔔</div><h3>Stay informed</h3><p>Receive in-app updates when a request is created or a donor responds.</p></article><article class="value-card"><div class="value-icon">🧭</div><h3>Follow each step</h3><p>Review request history and status updates from your account in one place.</p></article></div>
+<div class="heading"><span class="section-eyebrow">How it works</span><h2>Four simple steps to connect</h2><p>RakthaMitra helps coordinate communication from the first request to the latest update.</p></div>
+<div class="steps-track"><article class="journey-card"><div class="journey-no">1</div><h3>Create an account</h3><p>Register as a donor or sign in to manage your requests.</p></article><article class="journey-card"><div class="journey-no">2</div><h3>Search or request</h3><p>Find listed donors or submit the blood requirement details.</p></article><article class="journey-card"><div class="journey-no">3</div><h3>Receive a response</h3><p>A matching donor may respond if willing to be contacted.</p></article><article class="journey-card"><div class="journey-no">4</div><h3>Track updates</h3><p>Follow request status and notifications from your account.</p></article></div>
+<div class="home-banner"><div><h3>Ready to be someone's helping hand?</h3><p>Join the RakthaMitra community, keep your availability up to date, and help people find the right next step.</p></div><button class="btn" type="button" onclick="go('register')">Become a donor&nbsp; ♥</button></div>
+<div class="heading" id="helpFaq"><span class="section-eyebrow">Help centre</span><h2>Frequently asked questions</h2><p>Quick answers about using RakthaMitra.</p></div><div class="faq-grid"><details><summary>Does a donor response confirm donation?</summary><p>No. A response only means the donor is willing to be contacted. It does not confirm eligibility, compatibility, or that a donation has taken place.</p></details><details><summary>Can I use RakthaMitra for urgent needs?</summary><p>For urgent blood needs, contact your hospital and an authorized blood bank immediately. Do not rely only on website listings or notifications.</p></details><details><summary>How do I keep my donor listing updated?</summary><p>Sign in, open My Profile, and update your contact details and availability.</p></details><details><summary>Can I track a request later?</summary><p>Yes. Sign in and open Request History to review your requests and their latest recorded status.</p></details></div>
+<div class="support-panel" id="helpSupport"><div><span class="section-eyebrow">Help &amp; support</span><h3>Need a hand using RakthaMitra?</h3><p>For login, profile, donor-search or request-tracking issues, first check the FAQs above. If the issue continues, contact the RakthaMitra project team or your college project supervisor and include a short description of the problem. Do not send passwords or private medical documents.</p></div><div class="support-actions"><button class="btn outline" type="button" onclick="document.getElementById('helpFaq').scrollIntoView({behavior:'smooth'})">Read FAQs</button><button class="btn" type="button" onclick="go('profile')">My profile&nbsp; →</button></div></div>
+<div class="notice">RakthaMitra coordinates information and responses only. For urgent needs, contact your hospital or an authorized blood bank. Donor availability, eligibility, compatibility, and any donation must be confirmed by qualified healthcare professionals.</div></section>
+
+<section class="page" id="dashboard">
+<div class="dashboard-hero"><div><span class="section-eyebrow">Your community overview</span><h2>Welcome back, <span id="dashboardGreeting">there</span> 👋</h2><p>Here is the latest activity recorded in RakthaMitra.</p></div><button class="btn outline" type="button" onclick="loadDashboard()">↻ &nbsp; Refresh stats</button></div>
+<div class="cards dash-metrics"><div class="card dash-card"><div class="metric-icon">🤝</div><div class="muted">Registered donors</div><div class="metric" id="statDonors">—</div><span class="tag">Community</span></div><div class="card dash-card"><div class="metric-icon">🩸</div><div class="muted">Total blood requests</div><div class="metric" id="statRequests">—</div><span class="tag">All requests</span></div><div class="card dash-card"><div class="metric-icon">✓</div><div class="muted">Fulfilled requests</div><div class="metric" id="statFulfilled">—</div><span class="tag green">Marked fulfilled</span></div><div class="card dash-card"><div class="metric-icon">⏳</div><div class="muted">Pending requests</div><div class="metric" id="statPending">—</div><span class="tag">In progress</span></div></div>
+<div class="dash-bottom"><div class="panel"><div class="section-eyebrow">Request progress</div><h3 style="margin:5px 0">Fulfillment overview</h3><p class="muted">Share of requests currently marked as fulfilled.</p><div style="display:flex;align-items:baseline;gap:8px"><strong class="metric" id="fulfillmentRate">0%</strong><span class="muted">of total requests</span></div><div class="progress-line"><div class="progress-fill" id="fulfillmentBar"></div></div><div style="display:flex;justify-content:space-between;gap:10px"><span class="muted">Fulfilled: <b id="progressFulfilled">0</b></span><span class="muted">Pending: <b id="progressPending">0</b></span></div><p class="dashboard-footnote">This percentage reflects request statuses entered in the system. It is not a measure of confirmed blood donations or medical outcomes.</p></div>
+<div class="panel"><div class="section-eyebrow">Quick actions</div><h3 style="margin:5px 0 14px">What would you like to do?</h3><div class="dash-shortcuts"><button class="btn" onclick="go('find')">🔎 Find donors</button><button class="btn" onclick="go('request')">＋ New request</button><button class="btn outline" onclick="go('track')">▤ Request history</button><button class="btn outline" onclick="go('responses')">♥ Donor responses</button></div><p class="dashboard-footnote">Keep your profile and donor availability up to date so the directory reflects your latest information.</p></div></div>
+<div class="notice">Dashboard figures are coordination counts from the database. A donor response or fulfilled status does not independently verify medical eligibility, compatibility, or actual transfusion. Please confirm all medical decisions with an authorized blood bank or healthcare professional.</div></section>
+<section class="page" id="responses"><div class="heading"><h2>Donor response board</h2><p>See requests that match your registered blood group and respond if you are willing to contact the requester.</p></div><div class="actions"><button class="btn outline" type="button" onclick="loadOpenRequests()">Refresh requests</button></div><div id="openRequestList" class="donors"><div class="empty">Loading requests...</div></div><div class="notice">A response means you are willing to be contacted. It does not confirm medical eligibility, compatibility, or donation. The hospital or authorized blood bank must make those decisions.</div></section>
+<section class="page" id="find"><div class="heading"><h2>Find blood donors</h2><p>Search available donors by blood group and location.</p></div><div class="panel"><div class="formgrid"><div class="field"><label for="sg">Blood group</label><select id="sg"><option value="">All groups</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div><div class="field"><label for="sc">City / area</label><input id="sc" placeholder="e.g. Jaipur"></div></div><div class="actions"><button class="btn" type="button" onclick="renderDonors()">Search donors</button><button class="btn outline" type="button" onclick="resetSearch()">Clear filters</button></div></div><div id="donorList" class="donors"></div></section>
+
+<section class="page" id="register"><div class="heading"><h2>Become a donor</h2><p>Join the donor community and help save lives.</p></div>
+<form id="donorForm" class="panel"
+      action="register.php" method="POST">
+<div class="formgrid">
+<div class="field"><label for="dn">Full name *</label><input id="dn" name="name" autocomplete="name" required></div>
+<div class="field"><label for="demail">Email address *</label><input id="demail" name="email" type="email" autocomplete="email" required></div>
+<div class="field"><label for="dpassword">Password (minimum 6 characters) *</label><input id="dpassword" name="password" type="password" minlength="6" autocomplete="new-password" required></div>
+<div class="field"><label for="dg">Blood group *</label><select id="dg" name="blood_group" required><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+<div class="field"><label for="dcity">City / area *</label><input id="dcity" name="city" autocomplete="address-level2" required></div>
+<div class="field"><label for="phone">Contact number *</label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" pattern="[0-9+() -]{7,20}" minlength="7" maxlength="20" required placeholder="Enter phone number"></div>
+<div class="field"><label for="dage">Age *</label><input id="dage" name="age" type="number" min="18" max="65" required></div>
+<div class="field"><label for="dgender">Gender</label><select id="dgender" name="gender"><option value="">Prefer not to say</option><option>Female</option><option>Male</option><option>Other</option></select></div>
+</div><div class="actions"><button class="btn" type="submit">Register as donor</button></div><div class="notice">Your contact details should only be shared with people you trust. Donor eligibility must be confirmed by a healthcare professional.</div></form></section>
+
+<section class="page" id="request"><div class="heading"><h2>Create a blood request</h2><p>Share the details of the blood requirement.</p></div><form id="requestForm" class="panel"><div class="formgrid">
+<div class="field"><label for="rn">Requester name *</label><input id="rn" name="requester" autocomplete="name" required></div><div class="field"><label for="rg">Required blood group *</label><select id="rg" name="bloodGroup" required><option value="">Select</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+<div class="field"><label for="rcity">City / area *</label><input id="rcity" name="city" required></div><div class="field"><label for="hospital">Hospital / blood bank *</label><input id="hospital" name="hospital" required></div>
+<div class="field"><label for="units">Units requested</label><select id="units" name="units"><option>1</option><option>2</option><option>3</option><option>4</option></select></div><div class="field"><label for="urgency">Urgency</label><select id="urgency" name="urgency"><option>Urgent</option><option>Within 24 hours</option><option>Planned</option></select></div>
+<div class="field full"><label for="notes">Additional notes (optional)</label><textarea id="notes" name="notes"></textarea></div></div><div class="actions"><button class="btn" type="submit">Submit blood request</button></div><div class="notice">For emergencies, contact the treating hospital, emergency services, or an authorized blood bank immediately.</div></form></section>
+
+<section class="page" id="track"><div class="heading"><h2>Request history</h2><p>View, search, and filter all blood requests submitted from your account.</p></div><div class="panel" style="margin-bottom:14px"><div class="formgrid">
+<div class="field"><label for="historySearch">Search by hospital or city</label><input id="historySearch" placeholder="Type hospital or city"></div>
+<div class="field"><label for="historyStatus">Filter by status</label><select id="historyStatus"><option value="">All statuses</option><option>Request Created</option><option>Donor Response Received</option><option>Donor Found</option><option>Request Fulfilled</option></select></div>
+</div><div class="actions"><button class="btn outline" type="button" onclick="clearHistoryFilters()">Clear filters</button></div></div>
+<div class="panel tablewrap"><table><thead><tr><th>ID</th><th>Date</th><th>Blood</th><th>Location</th><th>Hospital</th><th>Urgency</th><th>Status</th><th>Update status</th></tr></thead><tbody id="rows"></tbody></table><div id="empty" class="empty">No requests yet. Create one to see it here.</div></div><div class="panel" style="margin-top:16px"><h3 style="margin-top:0">Request journey</h3><div class="journey"><span class="step done">Request Created</span><span class="step">Donor Response Received</span><span class="step">Donor Found</span><span class="step">Request Fulfilled</span></div><p class="muted">Use the status controls to record progress. Update a status only after confirming the corresponding event with the donor or hospital.</p></div></section>
+
+<section class="page" id="notifications">
+ <div class="heading"><h2>Notifications</h2><p>Updates about your blood requests.</p></div>
+ <div class="actions" style="margin:0 0 14px"><button class="btn outline" type="button" onclick="markAllNotificationsRead()">Mark all as read</button><button class="btn outline" type="button" onclick="loadNotifications()">Refresh</button></div>
+ <div class="panel" id="notificationList"><div class="empty">Loading notifications...</div></div>
+ <div class="notice">Notifications are in-app alerts. They do not replace direct confirmation with a donor, hospital, or authorized blood bank.</div>
+</section>
+<section class="page" id="login">
+  <div class="login-wrap"><div class="login-card">
+    <div class="login-mark">♥</div><h2>Welcome to RakthaMitra</h2>
+    <p class="sub">Sign in to view and manage your donor profile on this device.</p>
+    <form id="loginForm" class="panel" action="login.php" method="POST">      <div class="field"><label for="loginEmail">Email address</label><input id="loginEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required></div>
+      <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" name="password" type="password" placeholder="Enter a password (6+ characters)" autocomplete="current-password" required minlength="6"></div>
+      <button class="btn" id="loginSubmit" type="submit">Sign in</button>
+    </form>
+    <p class="login-foot">New to RakthaMitra? <a href="#" onclick="go('register');return false;" style="color:var(--red);font-weight:700">Register as a donor</a></p>
+    <p class="login-foot">Sign in using the email and password you used during registration.</p>
+  </div></div>
+</section>
+<section class="page" id="profile">
+ <div class="heading"><h2>My profile</h2><p>Manage your contact details and donor availability.</p></div>
+ <div class="panel" id="profileSignedOut"><p>Please sign in to view your profile.</p><button class="btn" type="button" onclick="go('login')">Go to login</button></div>
+ <form id="profileForm" class="panel" hidden><div class="formgrid">
+  <div class="field"><label for="profileName">Full name *</label><input id="profileName" required autocomplete="name"></div>
+  <div class="field"><label for="profileEmail">Email address</label><input id="profileEmail" type="email" readonly></div>
+  <div class="field"><label for="profileGroup">Blood group</label><select id="profileGroup"><option value="">Not specified</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div>
+  <div class="field"><label for="profileCity">City / area</label><input id="profileCity" autocomplete="address-level2"></div>
+  <div class="field"><label for="profilePhone">Contact number</label><input id="profilePhone" type="tel" inputmode="tel" pattern="[0-9+() -]{7,20}" minlength="7" maxlength="20" autocomplete="tel"></div>
+  <div class="field"><label for="profileAvailability">Donor availability</label><select id="profileAvailability"><option>Available</option><option>Not available</option></select></div>
+  <div class="field"><label for="profileConsent">Allow contact details to be shared</label><select id="profileConsent"><option value="Yes">Yes</option><option value="No">No</option></select></div>
+ </div><div class="actions"><button class="btn" type="submit">Save profile</button><button class="btn outline" type="button" onclick="logout()">Sign out</button></div><p class="muted">Your profile details are saved to the RakthaMitra database.</p></form>
+ <div class="heading"><h2>My requests</h2><p>Requests submitted from your signed-in account.</p></div><div class="panel tablewrap"><table><thead><tr><th>ID</th><th>Date</th><th>Blood</th><th>Location</th><th>Hospital</th><th>Urgency</th><th>Status</th><th>Update status</th></tr></thead><tbody id="profileRows"></tbody></table><div id="profileEmpty" class="empty">Sign in and submit a request to see it here.</div></div>
+</section>
+</main>
+<footer class="site-footer"><div class="footer-inner"><div><div class="footer-brand">♥ RakthaMitra</div><p>Connecting donor listings and blood requests through a simple community coordination platform.</p></div><div><div class="footer-heading">Explore</div><div class="footer-links"><a href="#about" onclick="go('home');setTimeout(()=>document.getElementById('about').scrollIntoView({behavior:'smooth'}),30);return false">About us</a><a href="#helpFaq" onclick="go('home');setTimeout(()=>document.getElementById('helpFaq').scrollIntoView({behavior:'smooth'}),30);return false">Help &amp; FAQs</a><a href="#helpSupport" onclick="go('home');setTimeout(()=>document.getElementById('helpSupport').scrollIntoView({behavior:'smooth'}),30);return false">Help &amp; support</a></div></div><div><div class="footer-heading">Safety</div><div class="footer-links"><a href="#helpSupport" onclick="go('home');setTimeout(()=>document.getElementById('helpSupport').scrollIntoView({behavior:'smooth'}),30);return false">Contact project team</a><a href="#medical-notice" onclick="go('home');setTimeout(()=>document.querySelector('#home .notice').scrollIntoView({behavior:'smooth'}),30);return false">Medical &amp; safety note</a></div></div></div><div class="footer-bottom"><span>© 2026 RakthaMitra. All rights reserved.</span><span>Made for community support · Not a substitute for an authorized blood bank or medical advice.</span></div></footer><div class="toast" id="toast"></div>
+<script>
+'use strict';
+const STORAGE_KEY='rakthamitra_data_v2';
+let donors=[], requests=[], nextId=1001, currentUser=null, toastTimer;
+let profiles={};
+function loadData(){
+ try {
+  const raw=localStorage.getItem(STORAGE_KEY);
+  if(!raw)return;
+  const data=JSON.parse(raw);
+  if(Array.isArray(data.requests)) requests=data.requests.filter(r=>r && Number.isFinite(Number(r.id)) && typeof r.status==='string');
+  if(data.profiles && typeof data.profiles==='object') profiles=data.profiles;
+  const maxId=requests.reduce((m,r)=>Math.max(m,Number(r.id)||0),1000);
+  nextId=maxId+1;
+ } catch(err){ console.warn('Saved data could not be loaded:',err); }
+}
+function saveData(){
+ try{localStorage.setItem(STORAGE_KEY,JSON.stringify({requests,profiles}));}
+ catch(err){msg('Could not save data in this browser.');}
+}
+function go(page){const target=document.getElementById(page);if(!target || !target.classList.contains('page')){msg('That page is not available.');return;}
+ document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===page));
+ document.querySelectorAll('nav button[data-page]').forEach(btn=>{const active=btn.dataset.page===page;btn.classList.toggle('active',active);if(active)btn.setAttribute('aria-current','page');else btn.removeAttribute('aria-current');});
+ if(page==='find')renderDonors(); if(page==='track'||page==='profile')renderRequests(); if(page==='profile')renderProfile(); if(page==='dashboard')loadDashboard(); if(page==='responses')loadOpenRequests(); window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('nav button[data-page]').forEach(btn=>btn.addEventListener('click',()=>go(btn.dataset.page)));
+function msg(message){const toast=document.getElementById('toast');toast.textContent=message;toast.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>{toast.style.display='none';},3000);}
+function esc(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function value(id){const el=document.getElementById(id);return el ? el.value.trim() : '';}
+async function renderDonors(){
+ const list=document.getElementById('donorList');
+ const group=value('sg').toLowerCase(), city=value('sc').toLowerCase();
+ list.innerHTML='<div class="empty" style="grid-column:1/-1">Loading donors...</div>';
+
+ try{
+  const response=await fetch('find_donors.php',{cache:'no-store'});
+  if(!response.ok) throw new Error('Donor list could not be loaded.');
+  const data=await response.json();
+  if(!Array.isArray(data)) throw new Error('Invalid donor data received.');
+
+  donors=data.map(d=>({
+   name:d.name||'',
+   group:d.blood_group||'',
+   city:d.city||'',
+   available:d.availability||'Available',
+   age:d.age||'',
+   gender:d.gender||''
+  }));
+
+  const found=donors.map((donor,index)=>({...donor,_index:index}))
+   .filter(d=>(!group||d.group.toLowerCase()===group)&&
+               (!city||d.city.toLowerCase().includes(city))&&
+               d.available.toLowerCase()==='available');
+
+  list.innerHTML=found.length?found.map(d=>`<article class="donor">
+   <div class="donor-top"><div class="blood">${esc(d.group)}</div><span class="tag green">Available</span></div>
+   <h3>${esc(d.name)}</h3>
+   <p>📍 ${esc(d.city)}</p>
+   <p>Availability: ${esc(d.available)}</p>
+   <button class="btn" type="button" data-donor-index="${d._index}">Request help</button>
+  </article>`).join(''):'<div class="empty" style="grid-column:1/-1">No available matches. Try a different group or location.</div>';
+
+  list.querySelectorAll('[data-donor-index]').forEach(btn=>
+   btn.addEventListener('click',()=>startRequest(Number(btn.dataset.donorIndex)))
+  );
+  document.getElementById('dc').textContent=donors.length;
+ }catch(error){
+  console.error(error);
+  list.innerHTML='<div class="empty" style="grid-column:1/-1">Could not load donors. Please check that find_donors.php and the database connection are working.</div>';
+ }
+}
+function homeFindDonors(){const group=document.getElementById('homeBloodGroup').value;const city=document.getElementById('homeCity').value.trim();document.getElementById('sg').value=group;document.getElementById('sc').value=city;go('find');renderDonors();}
+function resetSearch(){document.getElementById('sg').value='';document.getElementById('sc').value='';renderDonors();msg('Search filters cleared.');}
+function startRequest(index){const donor=donors[index];if(!donor){msg('Donor details could not be found.');return;}document.getElementById('rg').value=donor.group;document.getElementById('rcity').value=donor.city;const notes=document.getElementById('notes');notes.value=`Interested in contacting listed donor: ${donor.name}. Please confirm availability directly.`;go('request');msg('Request form filled with the selected donor details. Submit it to create a request.');}
+// Donor registration is submitted directly to register.php using POST.
+// Do not prevent the form's default submission here; PHP stores the record in MySQL.
+
+document.getElementById('requestForm').addEventListener('submit', async event=>{
+ event.preventDefault();
+ if(!currentUser){msg('Please log in before submitting a blood request.');go('login');return;}
+ const requester=value('rn'),group=value('rg'),city=value('rcity'),hospital=value('hospital');
+ if(!requester||!group||!city||!hospital){msg('Please complete all required request fields.');return;}
+ const formData=new FormData();
+ formData.append('patient_name',requester);
+ formData.append('blood_group',group);
+ formData.append('units',value('units')||'1');
+ formData.append('hospital',hospital);
+ formData.append('city',city);
+ formData.append('urgency',value('urgency')||'Planned');
+ formData.append('notes',value('notes'));
+ try{
+  const response=await fetch('create_request.php',{method:'POST',body:formData});
+  const result=await response.json();
+  if(!response.ok||!result.success){msg(result.message||'Could not save your blood request.');return;}
+  event.target.reset();
+  await renderRequests();
+  await loadNotifications();
+  msg('Blood request saved successfully in MySQL.');
+  go('track');
+ }catch(error){console.error(error);msg('Could not connect to the server. Check your PHP files and database.');}
+});
+async function renderRequests(){
+ const empty=document.getElementById('empty'),rows=document.getElementById('rows');
+ rows.innerHTML='<tr><td colspan="8" class="empty">Loading requests...</td></tr>';
+ try{
+  const response=await fetch('get_requests.php',{cache:'no-store'});
+  const data=await response.json();
+  if(!response.ok||!data.success) throw new Error(data.message||'Could not load requests.');
+  requests=(data.requests||[]).map(r=>({id:Number(r.id),group:r.blood_group,city:r.city,hospital:r.hospital,units:r.units,urgency:r.urgency,status:r.status,created_at:r.created_at,email:currentUser?.email||''}));
+  empty.style.display=requests.length?'none':'block';
+  renderHistoryRows();
+  document.getElementById('rc').textContent=requests.length;
+  renderProfileRequests();
+ }catch(error){
+  console.error(error);requests=[];empty.style.display='block';rows.innerHTML='';
+  empty.textContent='Could not load requests. Please check get_requests.php and your database connection.';
+  document.getElementById('rc').textContent='0';renderProfileRequests();
+ }
+}
+function renderHistoryRows(){
+ const search=value('historySearch').toLowerCase(),status=value('historyStatus');
+ const filtered=requests.filter(r=>(!search||String(r.city||'').toLowerCase().includes(search)||String(r.hospital||'').toLowerCase().includes(search))&&(!status||r.status===status));
+ const rows=document.getElementById('rows'),empty=document.getElementById('empty');
+ rows.innerHTML=filtered.map(r=>requestRow(r)).join('');
+ empty.style.display=filtered.length?'none':'block';
+ empty.textContent=requests.length?'No requests match these filters.':'No requests yet. Create one to see it here.';
+}
+function clearHistoryFilters(){
+ document.getElementById('historySearch').value='';
+ document.getElementById('historyStatus').value='';
+ renderHistoryRows();
+}
+document.getElementById('historySearch').addEventListener('input',renderHistoryRows);
+document.getElementById('historyStatus').addEventListener('change',renderHistoryRows);
+const requestStatuses=['Request Created','Donor Response Received','Donor Found','Request Fulfilled'];
+function requestRow(r){
+ const options=requestStatuses.map(s=>`<option value="${esc(s)}" ${r.status===s?'selected':''}>${esc(s)}</option>`).join('');
+ return `<tr><td>#${esc(r.id)}</td><td>${esc(r.created_at?new Date(r.created_at).toLocaleDateString():"—")}</td><td><b>${esc(r.group)}</b><br><span class="muted">${esc(r.units||1)} unit(s)</span></td><td>${esc(r.city)}</td><td>${esc(r.hospital)}</td><td>${esc(r.urgency)}</td><td><span class="tag">${esc(r.status)}</span></td><td><select aria-label="New status for request ${esc(r.id)}" id="status-${esc(r.id)}">${options}</select><button class="btn small" type="button" onclick="updateRequestStatus(${Number(r.id)})" style="margin-top:6px">Save</button></td></tr>`;
+}
+async function updateRequestStatus(id){
+ const select=document.getElementById(`status-${id}`);
+ if(!select){msg('Status control not found.');return;}
+ const formData=new FormData();formData.append('request_id',String(id));formData.append('status',select.value);
+ try{
+  const response=await fetch('update_request_status.php',{method:'POST',body:formData});
+  const result=await response.json();
+  if(!response.ok||!result.success){msg(result.message||'Could not update request status.');return;}
+  msg('Request status updated successfully.');
+  await renderRequests();
+  await loadNotifications();
+ }catch(error){console.error(error);msg('Could not connect to the server. Please try again.');}
+}
+
+async function loadDashboard(){
+ const greeting=document.getElementById('dashboardGreeting');if(greeting)greeting.textContent=(currentUser&&currentUser.name?currentUser.name.split(' ')[0]:'there');
+ try{const r=await fetch('dashboard_stats.php',{cache:'no-store'});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Stats unavailable');
+ const donors=Number(d.stats.donors)||0, total=Number(d.stats.requests)||0, fulfilled=Number(d.stats.fulfilled)||0, pending=Number(d.stats.pending)||0;
+ document.getElementById('statDonors').textContent=donors;document.getElementById('statRequests').textContent=total;document.getElementById('statFulfilled').textContent=fulfilled;document.getElementById('statPending').textContent=pending;document.getElementById('homeFulfilled').textContent=fulfilled;
+ const rate=total?Math.round((fulfilled/total)*100):0;document.getElementById('fulfillmentRate').textContent=rate+'%';document.getElementById('fulfillmentBar').style.width=rate+'%';document.getElementById('progressFulfilled').textContent=fulfilled;document.getElementById('progressPending').textContent=pending;
+ }catch(e){console.error(e);msg('Could not load dashboard analytics. Please check dashboard_stats.php.');}
+}
+async function loadOpenRequests(){
+ const box=document.getElementById('openRequestList');box.innerHTML='<div class="empty">Loading matching requests...</div>';
+ try{const r=await fetch('open_requests.php',{cache:'no-store'});const d=await r.json();if(!r.ok||!d.success)throw new Error(d.message||'Could not load requests');
+ if(!d.requests.length){box.innerHTML='<div class="empty" style="grid-column:1/-1">No matching open requests at the moment.</div>';return;}
+ box.innerHTML=d.requests.map(x=>`<article class="donor"><div class="donor-top"><div class="blood">${esc(x.blood_group)}</div><span class="tag">${esc(x.urgency)}</span></div><h3>Request #${esc(x.id)}</h3><p>📍 ${esc(x.city)}</p><p>Hospital: ${esc(x.hospital)}</p><p>Units: ${esc(x.units)}</p><p>Status: ${esc(x.status)}</p><button class="btn" type="button" onclick="respondToRequest(${Number(x.id)})">I can respond</button></article>`).join('');
+ }catch(e){console.error(e);box.innerHTML='<div class="empty">Could not load open requests. Check open_requests.php.</div>';}
+}
+async function respondToRequest(id){
+ if(!currentUser){msg('Please log in as a registered donor.');go('login');return;}
+ if(!confirm('Send your response to the requester? Your registered contact details may be shared with them only if your profile permits it.'))return;
+ const f=new FormData();f.append('request_id',String(id));
+ try{const r=await fetch('respond_to_request.php',{method:'POST',body:f});const d=await r.json();if(!r.ok||!d.success){msg(d.message||'Could not send response.');return;}msg('Your response was sent.');await loadOpenRequests();await loadNotifications();}
+ catch(e){msg('Could not connect to the server.');}
+}
+let notificationItems=[];
+async function loadNotifications(){
+ const list=document.getElementById('notificationList');
+ if(!currentUser){list.innerHTML='<div class="empty">Please log in to view notifications.</div>';return;}
+ list.innerHTML='<div class="empty">Loading notifications...</div>';
+ try{
+  const response=await fetch('get_notifications.php',{cache:'no-store'});
+  const data=await response.json();
+  if(!response.ok||!data.success) throw new Error(data.message||'Could not load notifications.');
+  notificationItems=data.notifications||[];
+  renderNotifications();
+ }catch(error){
+  console.error(error);
+  list.innerHTML='<div class="empty">Could not load notifications. Check get_notifications.php and your database.</div>';
+  updateNotificationBadge(0);
+ }
+}
+function updateNotificationBadge(count){
+ const badge=document.getElementById('notificationBadge');
+ badge.textContent=String(count);
+ badge.style.display=count>0?'inline-block':'none';
+}
+function renderNotifications(){
+ const list=document.getElementById('notificationList');
+ const unread=notificationItems.filter(n=>Number(n.is_read)===0).length;
+ updateNotificationBadge(unread);
+ if(!notificationItems.length){list.innerHTML='<div class="empty">You have no notifications yet.</div>';return;}
+ list.innerHTML=notificationItems.map(n=>`<article class="donor" style="margin-bottom:10px;border-color:${Number(n.is_read)===0?'#e9a1a8':'var(--line)'};background:${Number(n.is_read)===0?'#fffafb':'white'}">
+  <div class="donor-top"><b>${esc(n.message)}</b><span class="tag ${Number(n.is_read)===0?'':'green'}">${Number(n.is_read)===0?'New':'Read'}</span></div>
+  <p>Request #${esc(n.request_id)} · ${esc(n.created_at?new Date(n.created_at.replace(' ','T')).toLocaleString():'')}</p>
+  ${Number(n.is_read)===0?`<button class="btn small" type="button" onclick="markNotificationRead(${Number(n.id)})">Mark as read</button>`:''}
+ </article>`).join('');
+}
+async function markNotificationRead(id){
+ const formData=new FormData();formData.append('notification_id',String(id));
+ try{
+  const response=await fetch('mark_notification_read.php',{method:'POST',body:formData});
+  const result=await response.json();
+  if(!response.ok||!result.success){msg(result.message||'Could not update notification.');return;}
+  await loadNotifications();
+ }catch(error){console.error(error);msg('Could not update notification.');}
+}
+async function markAllNotificationsRead(){
+ if(!currentUser){msg('Please log in first.');return;}
+ try{
+  const response=await fetch('mark_notification_read.php',{method:'POST',body:new URLSearchParams({mark_all:'1'})});
+  const result=await response.json();
+  if(!response.ok||!result.success){msg(result.message||'Could not update notifications.');return;}
+  await loadNotifications();msg('All notifications marked as read.');
+ }catch(error){console.error(error);msg('Could not update notifications.');}
+}
+
+function updateAuthNav(){
+ const loginBtn=document.getElementById('loginNav'),profileBtn=document.getElementById('profileNav');
+ loginBtn.hidden=!!currentUser; profileBtn.hidden=!currentUser; document.getElementById('notificationsNav').hidden=!currentUser; document.getElementById('dashboardNav').hidden=!currentUser; document.getElementById('responsesNav').hidden=!currentUser;
+ let btn=document.getElementById('logoutButton');
+ if(currentUser){loadNotifications();}else{notificationItems=[];updateNotificationBadge(0);} if(currentUser&&!btn){btn=document.createElement('button');btn.id='logoutButton';btn.type='button';btn.textContent='Sign out';btn.addEventListener('click',logout);document.querySelector('nav').appendChild(btn);}else if(!currentUser&&btn)btn.remove();
+}
+async function renderProfile(){
+  const signedIn=!!currentUser;
+  document.getElementById('profileSignedOut').hidden=signedIn;
+  document.getElementById('profileForm').hidden=!signedIn;
+  if(signedIn){
+    try{
+      const response=await fetch('get_profile.php',{cache:'no-store'});
+      const data=await response.json();
+      if(!response.ok || !data.success){msg(data.message||'Could not load profile.');return;}
+      const p=data.profile;
+      currentUser={email:p.email,name:p.name};
+      document.getElementById('profileName').value=p.name||'';
+      document.getElementById('profileEmail').value=p.email||'';
+      document.getElementById('profileGroup').value=p.blood_group||'';
+      document.getElementById('profileCity').value=p.city||'';
+      document.getElementById('profilePhone').value=p.phone||'';
+      document.getElementById('profileAvailability').value=p.availability||'Available';
+      document.getElementById('profileConsent').value=p.consent||'Yes';
+    }catch(error){msg('Could not load profile. Check your PHP files and database.');}
+  }
+  renderProfileRequests();
+}
+function renderProfileRequests(){const body=document.getElementById('profileRows'),empty=document.getElementById('profileEmpty');if(!body||!empty)return;const mine=currentUser?requests:[];body.innerHTML=mine.map(r=>requestRow(r)).join('');empty.style.display=mine.length?'none':'block';}
+async function logout(){try{await fetch('logout.php');}catch(error){} currentUser=null;updateAuthNav();renderRequests();msg('You have signed out.');go('home');}
+document.getElementById('loginForm').addEventListener('submit',async event=>{
+ event.preventDefault();
+ const submitButton=document.getElementById('loginSubmit');
+ submitButton.disabled=true; submitButton.textContent='Signing in...';
+ const formData=new FormData(event.target);
+ try {
+  const response=await fetch('login.php',{method:'POST',body:formData,credentials:'same-origin',cache:'no-store'});
+  const result=(await response.text()).replace(/^\uFEFF/,'').trim();
+  if(!response.ok || !result.startsWith('LOGIN_SUCCESS:')){
+   msg(result || ('Login failed (HTTP '+response.status+').')); return;
+  }
+  const parts=result.split(':');
+  const email=parts[1]||'';
+  let name='';
+  try{name=decodeURIComponent(parts.slice(2).join(':'));}catch(e){name=parts.slice(2).join(':');}
+  if(!email){msg('Login response was incomplete. Please check login.php.');return;}
+  currentUser={email,name};
+  if(!profiles[email])profiles[email]={name,group:'',city:'',phone:'',available:'Available',consent:'Yes'};
+  saveData(); updateAuthNav(); renderRequests(); event.target.reset();
+  msg('Login successful!'); go('home');
+ } catch(error) {
+  console.error('Login error:',error);
+  msg('Could not connect to login.php. Open the site through http://localhost/ and check Apache/MySQL.');
+ } finally {submitButton.disabled=false;submitButton.textContent='Sign in';}
+});
+document.getElementById('profileForm').addEventListener('submit',async event=>{
+  event.preventDefault();
+  if(!currentUser){msg('Please sign in first.');go('login');return;}
+  const name=value('profileName'),phone=value('profilePhone');
+  if(!name){msg('Enter your full name.');return;}
+  if(phone&&!/^[0-9+() -]{7,20}$/.test(phone)){msg('Enter a valid contact number.');return;}
+  const formData=new FormData();
+  formData.append('name',name);
+  formData.append('blood_group',value('profileGroup'));
+  formData.append('city',value('profileCity'));
+  formData.append('phone',phone);
+  formData.append('availability',value('profileAvailability'));
+  formData.append('consent',value('profileConsent'));
+  try{
+    const response=await fetch('update_profile.php',{method:'POST',body:formData});
+    const result=await response.json();
+    if(!response.ok||!result.success){msg(result.message||'Profile update failed.');return;}
+    currentUser.name=name;
+    msg('Profile updated successfully in MySQL.');
+    renderDonors();
+  }catch(error){msg('Could not save profile. Check your connection and try again.');}
+});
+window.addEventListener('storage',event=>{if(event.key===STORAGE_KEY){loadData();
+fetch('session.php',{cache:'no-store'}).then(r=>r.json()).then(data=>{
+  if(data.logged_in){currentUser={email:data.email,name:data.name};updateAuthNav();renderProfile();}
+}).catch(()=>{});
+renderDonors();renderRequests();updateAuthNav();renderProfile();}});
+window.addEventListener('error',event=>{console.error(event.error||event.message);msg('Something went wrong. Please refresh and try again.');});
+loadData();
+fetch('session.php',{cache:'no-store'}).then(r=>r.json()).then(data=>{
+  if(data.logged_in){currentUser={email:data.email,name:data.name};updateAuthNav();renderProfile();}
+}).catch(()=>{});
+renderDonors();renderRequests();updateAuthNav();renderProfile();
+</script></body></html>

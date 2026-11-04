@@ -1,0 +1,12 @@
+RAKTHAMITRA – ALL PAGES DESIGN UPGRADE
+
+1. BACK UP your current folder: C:\xampp\htdocs\RakthaMitra_Profile
+2. Extract this ZIP.
+3. Copy index.html from this folder into C:\xampp\htdocs\RakthaMitra_Profile
+4. Replace the old index.html.
+5. Keep all existing PHP files and the rakthamitra MySQL database unchanged.
+6. Open http://localhost/RakthaMitra_Profile/ and press Ctrl + F5.
+
+This update refreshes the shared visual design and interactions across Home, Dashboard, Donor Responses, Find Donors, Become a Donor, Request Blood, Request History, Notifications, Login and My Profile. It does not change database structure or PHP endpoints.
+
+Test each page locally after replacement. If your current index.html has newer changes than the supplied title-page version, keep your backup so you can restore it.
